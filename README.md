@@ -12,6 +12,7 @@ Info Grabber can fetch songs:
 - Names
 - Mappers
 - Keys
+- Covers
 
 ## What's the point?
 Info Grabber can be used for getting information to be put on streams, like for the main tournament stream for example
