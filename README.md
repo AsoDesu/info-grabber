@@ -1,5 +1,5 @@
 # Info Grabber
-Info Grabber is a "command line" tool to get info from BeatSaver and ScoreSaber,
+Info Grabber is a "command line" tool to get info from BeatSaver and ScoreSaber
 
 ## What can Info Grabber Get?
 Info Grabber can fetch players:
@@ -37,3 +37,16 @@ If it keeps crashing, drag the exe file into Command Promt, and have a look to s
 If you would like to add anything to Info Grabber, or use it in one of your own projects, feel free
 
 If you find any bugs or have a feature request, please [raise and issue](https://github.com/AsoDesu/info-grabber/issues)
+
+### Dependencies
+- got
+- edit-json-file
+
+### DevDependencies
+- typescript
+- ts-node
+- nodemon
+- nexe
+#### Types
+- @types/node
+- @types/edit-json-file
