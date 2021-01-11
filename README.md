@@ -36,7 +36,7 @@ If it keeps crashing, drag the exe file into Command Promt, and have a look to s
 ## Contributing
 If you would like to add anything to Info Grabber, or use it in one of your own projects, feel free
 
-If you find any bugs or have a feature request, please [raise and issue](https://github.com/AsoDesu/info-grabber/issues)
+If you find any bugs or have a feature request, please [raise an issue](https://github.com/AsoDesu/info-grabber/issues)
 
 ### Dependencies
 - got
