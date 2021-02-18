@@ -18,10 +18,18 @@ Info Grabber can fetch songs:
 Info Grabber can be used for getting information to be put on streams, like for the main tournament stream for example
 
 ## How do you use it?
-1) Download the "Info_Grabber-(version).exe" file from [Releases](https://github.com/AsoDesu/info-grabber/releases), and place it into any folder
-2) Run the program and you'll notice than a "info.json" file and "data" folder is created
-3) In the "info.json" file, change the player id's and song bsr code to the ones you need*
-4) Everything will be downloaded and placed into the folder called "data"
+##### Normal Mode
+1) Download the `Info_Grabber-(version).exe` file from [Releases](https://github.com/AsoDesu/info-grabber/releases), and place it into any folder
+2) Run the program and you'll notice than a `info.json` file and `data` folder is created
+3) In the `info.json` file, change the player id's and song bsr code to the ones you need*
+4) Run the exe again and everything will be downloaded and put in a folder called `data`
+
+##### Watch Mode
+1) Download the `Info_Grabber-(version).exe` file from [Releases](https://github.com/AsoDesu/info-grabber/releases), and place it into any folder
+2) Run the program and you'll notice than an `info.json` file and `data` folder is created
+3) In the "info.json" file, set `watch` to `true`
+4) Everytime you change the values in the `info.json` file everything will be auto downloaded.
+
 ##### *If you don't want one of the setting, just leave the field blank
 
 ## It Keeps crashing and not doing anything
@@ -32,6 +40,7 @@ If it keeps crashing, drag the exe file into Command Promt, and have a look to s
 - Tournament Assistant Integration (Select a match from a TA Server and automaticly set the players and song)
 - Web Panel (Have a web panel, where you can just put in all the info on a web page and it auto, changes)
 - Discord Integration (Allow other people to do a command of a Discord Bot to set the player info)
+- Stream changer (Create a local web page with the stream embeds on. And auto-change the embed to a `player twitch` value in `info.json` whenever `info.json` is updates)
 
 ## Contributing
 If you would like to add anything to Info Grabber, or use it in one of your own projects, feel free
@@ -41,6 +50,7 @@ If you find any bugs or have a feature request, please [raise an issue](https://
 ### Dependencies
 - got
 - edit-json-file
+- socket.io
 
 ### DevDependencies
 - typescript

@@ -30,7 +30,7 @@ async function getUser(uid: string) {
     await got(`https://new.scoresaber.com/api/player/${uid}/full`).then(async res => {
         returnRes = (await JSON.parse(res.body))
     }).catch(() => {
-        console.log('\x1b[31m User was not found, either the wrong scoresaber id was provided, or new.scoresaber is down')
+        console.log('\x1b[31mUser was not found, either the wrong scoresaber id was provided, or new.scoresaber is down\x1b[0m')
         return false;
     })
     return returnRes as scoreSaber
@@ -41,7 +41,7 @@ async function getImage(data: scoreSaber) {
     await got(`https://new.scoresaber.com${data.playerInfo.avatar}`, { responseType: 'buffer' }).then(async res => {
         returnRes = res.body
     }).catch(() => {
-        console.log('\x1b[31m ScoreSaber Returned 404, eaither the wrong profile was entered, or scoresaber is down')
+        console.log('\x1b[31mScoreSaber Returned 404, eaither the wrong profile was entered, or scoresaber is down\x1b[0m')
         return false;
     })
     return returnRes

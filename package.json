@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon src/index.ts -i info.json",
     "build:ts": "tsc -p .",
     "build": "npm run build:ts && cd dist && nexe ./dist/index.js -r ../node_modules/* -n \"Info Grabber\" && move \"./Info Grabber.exe\" \"../\""
   },
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "edit-json-file": "^1.5.0",
-    "got": "^11.8.0"
+    "got": "^11.8.0",
+    "socket.io": "^3.1.1"
   }
 }

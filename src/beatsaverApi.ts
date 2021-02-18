@@ -73,7 +73,7 @@ async function getMap(key: string) {
     await gotClient(`https://beatsaver.com/api/maps/detail/${key}`).then(async res => {
         returnRes = (await JSON.parse(res.body))
     }).catch(() => {
-        console.log('\x1b[31m BeatSaver Returned 404, eaither the wrong key was entered, or beatsaver is down')
+        console.log('\x1b[31mBeatSaver Returned 404, eaither the wrong key was entered, or beatsaver is down\x1b[0m')
         return false;
     })
     return returnRes as beatsaverMap
@@ -84,7 +84,7 @@ async function getImage(map: beatsaverMap) {
     await gotClient(`https://beatsaver.com${map.coverURL}`, { responseType: 'buffer' }).then(async res => {
         returnRes = res.body
     }).catch(() => {
-        console.log('\x1b[31m BeatSaver Returned 404, eaither the wrong key was entered, or beatsaver is down')
+        console.log('\x1b[31mBeatSaver Returned 404, eaither the wrong key was entered, or beatsaver is down\x1b[0m')
         return false;
     })
     return returnRes

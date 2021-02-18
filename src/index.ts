@@ -4,10 +4,23 @@ import ejs from 'edit-json-file'
 import fs from 'fs'
 
 const file = ejs(`${__dirname}/info.json`)
-var opts = {
-    id1: file.get('player1'),
-    id2: file.get('player2'),
-    bsr: file.get('bsr')
+
+type infoFile = {
+    id1: string,
+    id2: string,
+    bsr: string,
+    watch: boolean
+}
+
+var opts = file.read() as infoFile
+
+function getOpts() {
+    opts = {
+        id1: file.get('player1'),
+        id2: file.get('player2'),
+        bsr: file.get('bsr'),
+        watch: file.get('watch')
+    }
 }
 
 try {
@@ -16,7 +29,17 @@ try {
     file.set('player1', '')
     file.set('player2', '')
     file.set('bsr', '')
+    file.set('watch', false)
     file.save()
+}
+
+if (opts.watch) {
+    console.log('Now watching info.json')
+    fs.watchFile(`${__dirname}\\info.json`, () => {
+        console.log('\x1b[32minfo.json updated. Getting new info!\x1b[0m')
+        opts = file.read() as infoFile
+        saveData()
+    })
 }
 
 saveData()
