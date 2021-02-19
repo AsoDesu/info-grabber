@@ -43,7 +43,21 @@ Info Grabber can be used for getting information to be put on streams, like for 
 **If you don't want one of the setting, just leave the field blank*
 **If you have any questions dm me on discord @Aso#0001**
 
-### 
+#### info.json
+```
+{
+  "id1": "",
+  "id2": "",
+  "twitch1": "",
+  "twitch2": "",
+  "bsr": "",
+  "watch": false,
+  "streams": false
+}
+```
+
+#### `data` folder
+![Data Folder](https://raw.githubusercontent.com/AsoDesu/info-grabber/master/assets/data_folder.png)
 
 ### It Keeps crashing and not doing anything
 If it keeps crashing, drag the exe file into Command Promt, and have a look to see if there is an error

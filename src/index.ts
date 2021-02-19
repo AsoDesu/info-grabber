@@ -3,43 +3,51 @@ import beatsaver from './beatsaverApi'
 import ejs from 'edit-json-file'
 import fs from 'fs'
 
+import stream_module from './stream-module/backend'
+
 const file = ejs(`${__dirname}/info.json`)
 
 type infoFile = {
     id1: string,
     id2: string,
+    twitch1: string,
+    twitch2: string,
     bsr: string,
-    watch: boolean
+    watch: boolean,
+    streams: boolean
 }
 
 var opts = file.read() as infoFile
 
-function getOpts() {
-    opts = {
-        id1: file.get('player1'),
-        id2: file.get('player2'),
-        bsr: file.get('bsr'),
-        watch: file.get('watch')
-    }
-}
-
 try {
     fs.readFileSync(`${__dirname}\\info.json`)
 } catch {
-    file.set('player1', '')
-    file.set('player2', '')
+    file.set('id1', '')
+    file.set('id2', '')
+    file.set('twitch1', '')
+    file.set('twitch2', '')
     file.set('bsr', '')
     file.set('watch', false)
+    file.set('streams', false)
     file.save()
 }
 
 if (opts.watch) {
     console.log('Now watching info.json')
-    fs.watchFile(`${__dirname}\\info.json`, () => {
+    fs.watchFile(`${__dirname}\\info.json`, { interval: 500 }, () => {
         console.log('\x1b[32minfo.json updated. Getting new info!\x1b[0m')
         opts = file.read() as infoFile
         saveData()
     })
+}
+
+if (opts.streams) {
+    if (!opts.watch) {
+        console.log('\x1b[31mWatch Mode must be enabled for streams to enable. Streams Disabled')
+    } else {
+        stream_module.listen(opts)
+        console.log('Streams Enabled. http://localhost/?v=twitch1')
+    }
 }
 
 saveData()
@@ -49,6 +57,7 @@ async function saveData() {
 
     if (!isNaN(parseInt(opts.id1))) { getp1() }
     if (!isNaN(parseInt(opts.id2))) { getp2() }
+    if (opts.streams && opts.watch) { stream_module.streamUpdate(opts) }
     if (opts.bsr) { getbs() }
 
     // Player 1
