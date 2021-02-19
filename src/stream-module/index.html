@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title"></title>
+
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #content {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0px;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <iframe width="100%" height="100%" frameborder="0"
+            src=""
+            id="iframe"></iframe>
+    </div>
+
+    <script>
+        var value = new URL(window.location.href).searchParams.get('v')
+        if (!value) { value = 'twitch1' }
+
+        var ws = new WebSocket('ws://localhost:81')
+
+        ws.addEventListener('message', (e) => {
+            var data = JSON.parse(e.data)
+
+            var iframe = document.getElementById('iframe')
+            if (data[value] == "") { iframe.src = ''; return; }
+            iframe.src = `https://player.twitch.tv/?channel=${data[value]}&height=1080&parent=localhost&scrolling&width=1920`
+        })
+
+    </script>
+</body>
+
+</html>
