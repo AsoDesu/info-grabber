@@ -57,8 +57,15 @@ async function saveData() {
 
     if (!isNaN(parseInt(opts.id1))) { getp1() }
     if (!isNaN(parseInt(opts.id2))) { getp2() }
-    if (opts.streams && opts.watch) { stream_module.streamUpdate(opts) }
+    if (opts.streams && opts.watch) { stream_module.streamUpdate(opts); setStreamTxt() }
     if (opts.bsr) { getbs() }
+
+    async function setStreamTxt() {
+        keepDir('data\\streams\\')
+
+        saveFile('streams\\twitch1.txt', opts.twitch1)
+        saveFile('streams\\twitch2.txt', opts.twitch2)
+    }
 
     // Player 1
     async function getp1() {
