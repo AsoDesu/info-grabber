@@ -35,10 +35,11 @@ Info Grabber can be used for getting information to be put on streams, like for 
 2) Close `InfoGraber.exe`
 3) Set `streams` in `info.json` to `true` and open `Info_Grabber-(version).exe`
 4) Info Grabber will download a folder called `InfoGrabber_ext` inside is an `index.html` file
-5) Open `http://localhost/?v=twitch1` and you will see a black screen
-6) If you change the `twitch1` a value in info.json, the stream will refresh with the new twitch name
-7) For the other stream, open `http://localhost/?v=twitch2` and change `twitch2`
-**You can even do more than 2 streams if you add another `twitch(number)` value and change the url to `http://localhost/?v=twitch(number)`**
+5) Open `http://localhost/?v=0` and you will see a black screen
+6) In the `players` array, change the `twitch` value to the stream you want.
+7) (Re)Open `http://localhost/?v=0` and you will the stream update
+8) If you want to see another players stream simply replace the `0` at the end of the URL with the index of the player
+###### See the example below for more details
 
 **If you don't want one of the setting, just leave the field blank*
 **If you have any questions dm me on discord @Aso#0001**
@@ -46,18 +47,48 @@ Info Grabber can be used for getting information to be put on streams, like for 
 #### info.json
 ```
 {
-  "id1": "",
-  "id2": "",
-  "twitch1": "",
-  "twitch2": "",
+  "players": [
+    {
+      "id": "",
+      "twitch": ""
+    }
+  ],
   "bsr": "",
   "watch": false,
   "streams": false
 }
 ```
 
+# Example
+#### info.json
+```
+{
+  "players": [
+    {
+      "id": "76561198272266872", // Aso's Scoresaber ID
+      "twitch": "asodesu_" // Aso's Twitch
+    },
+    {
+      "id": "76561198091128855", // Sirspam's Scoresaber ID
+      "twitch": "sirspam_" // Sirspam's twitch
+    },
+    {
+      "id": "76561198343533017", // Storm's Scoresaber
+      "twitch": "st0rmpacer" // Storm's Twitch
+    }
+  ],
+  "bsr": "",
+  "watch": true,
+  "streams": true
+}
+```
+- If i want Aso's twitch the URL would be `http://localhost/?v=0`
+- If i want Sirspam's twitch the URL would be `http://localhost/?v=1`
+- If i want Storm's twitch the URL would be `http://localhost/?v=2`
+
+
 #### `data` folder
-![Data Folder](https://i.imgur.com/EYEuMbM.png)
+![Data Folder](https://i.imgur.com/dlWdbAT.png)
 
 ### It Keeps crashing and not doing anything
 If it keeps crashing, drag the exe file into Command Promt, and have a look to see if there is an error
