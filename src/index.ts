@@ -4,6 +4,7 @@ import ejs from "edit-json-file";
 import fs from "fs";
 
 import stream_module from "./stream-module/backend";
+import IFTAManager from "./ta-module/IFTAManager";
 
 const file = ejs(`${__dirname}/info.json`);
 
@@ -12,6 +13,10 @@ type infoFile = {
 	bsr: string;
 	watch: boolean;
 	streams: boolean;
+	taip: {
+		ip: string;
+		password: string;
+	};
 };
 
 type player = {
@@ -28,6 +33,7 @@ try {
 	file.set("bsr", "");
 	file.set("watch", false);
 	file.set("streams", false);
+	file.set("taip", { ip: "", password: "" });
 	file.save();
 }
 
@@ -49,11 +55,16 @@ if (opts.streams) {
 	}
 }
 
+if (opts.taip && !opts.watch) {
+	console.log("\x1b[31mWatch Mode must be enabled for TA Integration. TA Disabled.");
+} else {
+	IFTAManager.connectToTA(opts);
+}
+
 saveData();
+keepDir("data\\");
 
 async function saveData() {
-	keepDir("data\\");
-
 	if (opts.players) {
 		opts.players.forEach(async (pl) => {
 			var data = await scoresaber.getUser(pl.id);
@@ -79,21 +90,21 @@ async function saveData() {
 	}
 
 	if (opts.bsr) {
-		getbs();
+		getbs(opts.bsr);
 	}
+}
 
-	// Map
-	async function getbs() {
-		var map_data = await beatsaver.getMap(opts.bsr);
-		if (map_data) {
-			var map_img = await beatsaver.getCover(map_data);
-			keepDir("data\\song\\");
+// Map
+async function getbs(bsr: string) {
+	var map_data = await beatsaver.getMap(bsr);
+	if (map_data) {
+		var map_img = await beatsaver.getCover(map_data);
+		keepDir("data\\song\\");
 
-			fs.writeFileSync(`${__dirname}\\data\\song\\song_img.png`, map_img, { encoding: "binary" });
-			saveFile("song\\song_map_name.txt", map_data.name);
-			saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
-			saveFile("song\\song_map_code.txt", map_data.key);
-		}
+		fs.writeFileSync(`${__dirname}\\data\\song\\song_img.png`, map_img, { encoding: "binary" });
+		saveFile("song\\song_map_name.txt", map_data.name);
+		saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
+		saveFile("song\\song_map_code.txt", map_data.key);
 	}
 }
 
@@ -108,3 +119,10 @@ function keepDir(path: string) {
 		fs.mkdirSync(`${__dirname}\\${path}`);
 	}
 }
+
+export default {
+	saveData,
+	getbs,
+	keepDir,
+	saveFile,
+};

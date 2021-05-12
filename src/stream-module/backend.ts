@@ -7,6 +7,10 @@ type infoFile = {
 	bsr: string;
 	watch: boolean;
 	streams: boolean;
+	taip: {
+		ip: string;
+		password: string;
+	};
 };
 
 type player = {
