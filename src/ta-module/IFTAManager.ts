@@ -23,7 +23,14 @@ type player = {
 var manager: TAManager;
 
 function connectToTA(opts: infoFile) {
-	manager = new TAManager(opts.taip.ip);
+	var ip: string;
+
+	if (!opts.taip.ip.includes(":")) {
+		console.log("No Overlay Port Specified, Using Default Port 10157");
+		ip = `${opts.taip.ip}:10157`;
+	}
+
+	manager = new TAManager(ip);
 	listenForSongLoads();
 }
 

@@ -1,3 +1,6 @@
 dist/
 node_modules/
 .releases/
+info.json
+data/
+infograbber_ext

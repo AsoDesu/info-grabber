@@ -37,6 +37,13 @@ try {
 	file.save();
 }
 
+try {
+	JSON.parse(fs.readFileSync(`${__dirname}\\info.json`, { encoding: "utf-8" }));
+} catch (e) {
+	console.log(`\x1b[32mFailed to parse JSON. ${e}`);
+	process.exit();
+}
+
 if (opts.watch) {
 	console.log("Now watching info.json");
 	fs.watchFile(`${__dirname}\\info.json`, { interval: 500 }, () => {
@@ -55,9 +62,9 @@ if (opts.streams) {
 	}
 }
 
-if (opts.taip && !opts.watch) {
+if (opts.taip && opts.taip.ip != "" && !opts.watch) {
 	console.log("\x1b[31mWatch Mode must be enabled for TA Integration. TA Disabled.");
-} else {
+} else if (opts.taip.ip != "") {
 	IFTAManager.connectToTA(opts);
 }
 
