@@ -38,12 +38,19 @@
 
         var ws = new WebSocket('ws://localhost:81')
 
+        var playerTwitch = ""
+
         ws.addEventListener('message', (e) => {
             var data = JSON.parse(e.data)
+
+            if (playerTwitch == data.players[value].twitch) return
 
             var iframe = document.getElementById('iframe')
             if (data.players[value].twitch == "") { iframe.src = ''; return; }
             iframe.src = `https://player.twitch.tv/?channel=${data.players[value].twitch}&height=1080&parent=localhost&scrolling&width=1920`
+
+            playerTwitch = data.players[value].twitch
+            console.log(playerTwitch)
         })
 
     </script>

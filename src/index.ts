@@ -13,6 +13,7 @@ type infoFile = {
 	bsr: string;
 	watch: boolean;
 	streams: boolean;
+	panel: boolean;
 	taip: {
 		ip: string;
 		password: string;
@@ -25,16 +26,30 @@ type player = {
 };
 
 var opts = file.read() as infoFile;
+var update = true;
 
 try {
 	fs.readFileSync(`${__dirname}\\info.json`);
 } catch {
-	file.set("players", [{ id: "", twitch: "" }]);
-	file.set("bsr", "");
-	file.set("watch", false);
-	file.set("streams", false);
-	file.set("taip", { ip: "", password: "" });
-	file.save();
+	var defaultConfig = {
+		players: [
+			{
+				id: "",
+				twitch: "",
+			},
+		],
+		bsr: "",
+		watch: true,
+		panel: true,
+		streams: true,
+		taip: {
+			ip: "",
+			password: "",
+		},
+	};
+
+	file.write(JSON.stringify(defaultConfig, null, 2));
+	opts = defaultConfig;
 }
 
 try {
@@ -47,37 +62,43 @@ try {
 if (opts.watch) {
 	console.log("Now watching info.json");
 	fs.watchFile(`${__dirname}\\info.json`, { interval: 500 }, () => {
+		if (update == false) return;
 		console.log("\x1b[32minfo.json updated. Getting new info!\x1b[0m");
 		opts = file.read() as infoFile;
-		saveData();
+		saveData(opts);
 	});
 }
 
 if (opts.streams) {
 	if (!opts.watch) {
-		console.log("\x1b[31mWatch Mode must be enabled for streams to enable. Streams Disabled");
+		console.log("\x1b[33mWatch Mode must be enabled for streams to enable. Streams Disabled");
 	} else {
 		stream_module.listen(opts);
 		console.log("Streams Enabled. http://localhost/?v=0");
 	}
 }
 
-if (opts.taip && opts.taip.ip != "" && !opts.watch) {
-	console.log("\x1b[31mWatch Mode must be enabled for TA Integration. TA Disabled.");
-} else if (opts.taip.ip != "") {
-	IFTAManager.connectToTA(opts);
+if (opts.panel && (!opts.watch || !opts.streams)) {
+	console.log("\x1b[33mWatch Mode and Streams must be enabled for the web panel to function. Panel Disabled.");
+	opts.panel = false;
 }
 
-saveData();
+if (opts.taip && opts.taip.ip != "" && !opts.watch) {
+	console.log("\x1b[33mWatch Mode must be enabled for TA Integration. TA Disabled.");
+} else if (opts.taip.ip != "") {
+	connectToTA(opts);
+}
+
+saveData(opts);
 keepDir("data\\");
 
-async function saveData() {
-	if (opts.players) {
-		opts.players.forEach(async (pl) => {
+async function saveData(info: infoFile) {
+	if (info.players) {
+		info.players.forEach(async (pl) => {
 			var data = await scoresaber.getUser(pl.id);
 			if (data) {
 				var img = await scoresaber.getImage(data);
-				var index = opts.players.indexOf(pl);
+				var index = info.players.indexOf(pl);
 				keepDir(`data\\p${index}\\`);
 				fs.writeFileSync(`${__dirname}\\data\\p${index}\\img.png`, img, { encoding: "binary" });
 
@@ -99,6 +120,10 @@ async function saveData() {
 	if (opts.bsr) {
 		getbs(opts.bsr);
 	}
+}
+
+function connectToTA(data: infoFile) {
+	IFTAManager.connectToTA(data);
 }
 
 // Map
@@ -127,9 +152,16 @@ function keepDir(path: string) {
 	}
 }
 
+function disableUpdate() {
+	update = false;
+}
+
 export default {
 	saveData,
 	getbs,
 	keepDir,
 	saveFile,
+	connectToTA,
+	file,
+	disableUpdate,
 };

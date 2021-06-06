@@ -12,16 +12,16 @@ class TAManager extends EventEmitter {
 		this.connection = new WebSocket(`ws://${IP}`);
 
 		this.connection.addEventListener("error", (e) => {
-			console.log("Failed to connect to server, did you put the right overlay port?", e.type);
+			console.log("\x1b[31mFailed to connect to server, did you put the right overlay port?", e.message);
 		});
 
 		this.connection.addEventListener("close", () => {
-			console.log("Failed to Connect");
+			console.log("\x1b[32mFailed to Connect");
 			this.connection = null;
 		});
 
 		this.connection.addEventListener("open", () => {
-			console.log("Connected to TA server!");
+			console.log(`\x1b[32mConnected to TA server! ${IP}`);
 			this.connection.addEventListener("message", async (e) => {
 				var msg = await JSON.parse(e.data);
 				//console.log(e.data);

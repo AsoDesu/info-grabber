@@ -26,8 +26,10 @@ function connectToTA(opts: infoFile) {
 	var ip: string;
 
 	if (!opts.taip.ip.includes(":")) {
-		console.log("No Overlay Port Specified, Using Default Port 10157");
+		console.log("\x1b[33mNo Overlay Port Specified, Using Default Port 10157");
 		ip = `${opts.taip.ip}:10157`;
+	} else {
+		ip = opts.taip.ip;
 	}
 
 	manager = new TAManager(ip);
@@ -37,7 +39,7 @@ function connectToTA(opts: infoFile) {
 function listenForSongLoads() {
 	manager.on("song-load", (e) => {
 		if (!e.SelectedLevel.LevelId.includes("custom_level_")) return;
-		console.log("Song Loaded From TA: Downloading.");
+		console.log("\x1b[32mSong Loaded From TA: Downloading.");
 		getbsfromhash(e.SelectedLevel.LevelId.replace("custom_level_", ""));
 	});
 }
