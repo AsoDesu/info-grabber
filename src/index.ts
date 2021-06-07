@@ -109,6 +109,8 @@ async function saveData(info: infoFile) {
 				if (pl.twitch) {
 					saveFile(`p${index}\\twitch.txt`, pl.twitch);
 				}
+			} else {
+				stream_module.failedToGet(pl.id);
 			}
 		});
 	}

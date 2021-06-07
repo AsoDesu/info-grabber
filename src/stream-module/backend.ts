@@ -19,6 +19,7 @@ type infoFile = {
 type player = {
 	id: string;
 	twitch: string;
+	failed?: boolean | null;
 };
 
 var cachedOpts: infoFile;
@@ -67,6 +68,10 @@ export default {
 	streamUpdate(opts: infoFile) {
 		cachedOpts = opts;
 		send(JSON.stringify(opts));
+	},
+	failedToGet(id: string) {
+		cachedOpts.players[cachedOpts.players.findIndex((p) => p.id == id)].failed = true;
+		send(JSON.stringify(cachedOpts));
 	},
 };
 
