@@ -9,8 +9,6 @@ class TAManager extends EventEmitter {
 	public ip: string;
 	public port: string;
 
-	public serverState: types.state;
-
 	constructor(IP: string, password?: string) {
 		super();
 		this.connection = new WebSocket(`ws://${IP}`);
@@ -36,15 +34,7 @@ class TAManager extends EventEmitter {
 						return;
 				}
 			});
-
-			process.on("exit", () => {
-				this.disconnect();
-			});
 		});
-	}
-
-	private send(msg: string) {
-		this.connection.send(msg);
 	}
 
 	private PlayerEvent(msg: packet) {
@@ -52,64 +42,14 @@ class TAManager extends EventEmitter {
 		var packetObject = packet.ChangedObject;
 		if (msg.From == "00000000-0000-0000-0000-000000000000") return;
 		switch (packet.Type) {
-			case 1:
-				if (packetObject.DownloadState != 0) return;
-				//console.log(`Player with \'${packetObject.ModList.length}\' mods, named \'${packetObject.Name}\', just joined`);
-				return;
-			case 2:
-				//console.log(`Player with \'${packetObject.ModList.length}\' mods, named \'${packetObject.Name}\', just left`);
-				return;
-			case 3:
-				if (!this.serverState) return;
-				this.serverState.Coordinators.push(packetObject);
-				this.emit("state-change", this.serverState);
-				//console.log(`Coordinator with name \'${packetObject.Name}\', and id \'${packetObject.Id}\' just Joined`);
-				return;
-			case 4:
-				console.log("coord left");
-				/*this.serverState.Coordinators.splice(
-					this.serverState.Coordinators.findIndex((c) => (c.Id = packetObject.Id)),
-					1
-				); */
-				this.emit("state-change", this.serverState);
-				//console.log("Coordinator with name " + packetObject.Name + " just Left");
-				return;
-			case 5:
-				this.serverState.Matches.push(packetObject);
-				this.emit("state-change", this.serverState);
-				return;
 			case 6:
-				this.serverState.Matches[this.serverState.Matches.findIndex((m) => m.Guid == packetObject.Guid)] = packetObject;
-				this.emit("state-change", this.serverState);
 				if (packetObject.Players[0].PlayState == 0 && packetObject.SelectedCharacteristic == null) {
 					//console.log(`Song was loaded in a match. Id: ${packetObject.Guid}, Players: ${packetObject.Players.length}, LevelName: ${packetObject.SelectedLevel.Name}`);
 					this.emit("song-load", packetObject);
 					return;
 				}
-			case 7:
-				if ((msg.From = "00000000-0000-0000-0000-000000000000")) {
-					//console.log(`Match was Ended. Id: ${packetObject.Guid}`);
-				}
-				return;
 		}
 		//console.log(msg);
-	}
-
-	public disconnect() {
-		this.serverState.Coordinators.forEach((c) => {
-			if (c.Name.includes("Info Grabber")) {
-				console.log("Id: " + c.Id);
-				var data = {
-					Size: 0,
-					SpecificPacketSize: 44,
-					Id: v4(),
-					From: v4(),
-					Type: 4,
-					SpecificPacket: { Type: 4, ChangedObject: c },
-				};
-				this.connection.send(JSON.stringify(data));
-			}
-		});
 	}
 }
 

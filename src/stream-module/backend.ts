@@ -33,10 +33,6 @@ export default {
 						cachedOpts.players = data.players;
 					}
 					if (data.taip && data.taip.ip != "") {
-						if (data.taip.ip == "1" && data.taip.password == "1") {
-							ta.getManager().disconnect();
-							return;
-						}
 						cachedOpts.taip = data.taip;
 						index.connectToTA(cachedOpts);
 					}
