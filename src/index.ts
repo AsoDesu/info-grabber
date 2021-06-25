@@ -6,14 +6,15 @@ import fs from "fs";
 import stream_module from "./stream-module/backend";
 import IFTAManager from "./ta-module/IFTAManager";
 import { infoFile, player } from "./Types";
+import path from "path";
 
-const file = ejs(`${__dirname}/info.json`);
+const file = ejs(path.join(process.cwd(), "info.json"));
 
 var opts = file.read() as infoFile;
 var update = true;
 
 try {
-	fs.readFileSync(`${__dirname}\\info.json`);
+	fs.readFileSync(path.join(process.cwd(), "info.json"));
 } catch {
 	var defaultConfig = {
 		players: [
@@ -40,7 +41,7 @@ try {
 }
 
 try {
-	JSON.parse(fs.readFileSync(`${__dirname}\\info.json`, { encoding: "utf-8" }));
+	JSON.parse(fs.readFileSync(path.join(process.cwd(), "info.json"), { encoding: "utf-8" }));
 } catch (e) {
 	console.log(`\x1b[32mFailed to parse JSON. ${e}`);
 	process.exit();
@@ -48,7 +49,7 @@ try {
 
 if (opts.watch) {
 	console.log("Now watching info.json");
-	fs.watchFile(`${__dirname}\\info.json`, { interval: 500 }, () => {
+	fs.watchFile(path.join(process.cwd(), "info.json"), { interval: 500 }, () => {
 		if (update == false) return;
 		console.log("\x1b[32minfo.json updated. Getting new info!\x1b[0m");
 		opts = file.read() as infoFile;
@@ -87,7 +88,7 @@ async function saveData(info: infoFile) {
 				var img = await scoresaber.getImage(data);
 				var index = info.players.indexOf(pl);
 				keepDir(`data\\p${index}\\`);
-				fs.writeFileSync(`${__dirname}\\data\\p${index}\\img.png`, img, { encoding: "binary" });
+				fs.writeFileSync(path.join(process.cwd(), `data\\p${index}\\img.png`), img, { encoding: "binary" });
 
 				saveFile(`p${index}\\name.txt`, data.playerInfo.playerName);
 				saveFile(`p${index}\\rank.txt`, "#" + data.playerInfo.rank.toString());
@@ -122,7 +123,7 @@ async function getbs(bsr: string) {
 		var map_img = await beatsaver.getCover(map_data);
 		keepDir("data\\song\\");
 
-		fs.writeFileSync(`${__dirname}\\data\\song\\song_img.png`, map_img, { encoding: "binary" });
+		fs.writeFileSync(path.join(process.cwd(), `data\\song\\song_img.png`), map_img, { encoding: "binary" });
 		saveFile("song\\song_map_name.txt", map_data.name);
 		saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
 		saveFile("song\\song_map_code.txt", map_data.key);
@@ -130,15 +131,15 @@ async function getbs(bsr: string) {
 	}
 }
 
-function saveFile(path: string, data: any) {
-	fs.writeFileSync(`${__dirname}\\data\\${path}`, data, { encoding: "utf-8" });
+function saveFile(pathd: string, data: any) {
+	fs.writeFileSync(path.join(process.cwd(), `data\\${pathd}`), data, { encoding: "utf-8" });
 }
 
-function keepDir(path: string) {
+function keepDir(pathd: string) {
 	try {
-		fs.readdirSync(`${__dirname}\\${path}`);
+		fs.readdirSync(path.join(process.cwd(), `${pathd}`));
 	} catch {
-		fs.mkdirSync(`${__dirname}\\${path}`);
+		fs.mkdirSync(path.join(process.cwd(), `${pathd}`));
 	}
 }
 

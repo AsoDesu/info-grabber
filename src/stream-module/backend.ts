@@ -6,6 +6,7 @@ import { infoFile, player } from "../Types";
 import download from "./download";
 import index from "../index";
 import ta from "../ta-module/IFTAManager";
+import path from "path";
 
 var cachedOpts: infoFile;
 var clients: wsserver[] = [];
@@ -17,7 +18,7 @@ export default {
 		const ws = new wsserver.Server({ port: 81 });
 		const app = express();
 
-		app.use(express.static("InfoGrabber_ext"));
+		app.use(express.static(path.join(process.cwd(), "InfoGrabber_ext")));
 
 		ws.on("connection", (socket) => {
 			clients.push(socket);

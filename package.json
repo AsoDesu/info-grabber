@@ -7,7 +7,8 @@
 		"start": "node dist/index.js",
 		"start:dev": "ts-node src/index.ts",
 		"dev": "nodemon src/index.ts -i info.json",
-		"build:ts": "tsc -p ."
+		"build:ts": "tsc -p .",
+		"build": "cd dist && pkg index.js -t node14-win && move ./index.exe ../bin/InfoGrabber.exe"
 	},
 	"author": "",
 	"license": "ISC",

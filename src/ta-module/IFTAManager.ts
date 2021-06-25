@@ -4,6 +4,7 @@ import stream_manager from "../stream-module/backend";
 
 import beatsaver from "../beatsaverApi";
 import fs from "fs";
+import path from "path";
 
 import { infoFile, player } from "../Types";
 import * as types from "./TATypes";
@@ -52,7 +53,7 @@ async function getbsfromhash(bsr: string) {
 		var map_img = await beatsaver.getCover(map_data);
 		index.keepDir("data\\song\\");
 
-		fs.writeFileSync(`${__dirname}\\..\\data\\song\\song_img.png`, map_img, { encoding: "binary" });
+		fs.writeFileSync(path.join(process.cwd(), `data\\song\\song_img.png`), map_img, { encoding: "binary" });
 		index.saveFile("song\\song_map_name.txt", map_data.name);
 		index.saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
 		index.saveFile("song\\song_map_code.txt", map_data.key);
