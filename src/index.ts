@@ -5,25 +5,9 @@ import fs from "fs";
 
 import stream_module from "./stream-module/backend";
 import IFTAManager from "./ta-module/IFTAManager";
+import { infoFile, player } from "./Types";
 
 const file = ejs(`${__dirname}/info.json`);
-
-type infoFile = {
-	players: player[];
-	bsr: string;
-	watch: boolean;
-	streams: boolean;
-	panel: boolean;
-	taip: {
-		ip: string;
-		password: string;
-	};
-};
-
-type player = {
-	id: string;
-	twitch: string;
-};
 
 var opts = file.read() as infoFile;
 var update = true;
@@ -38,7 +22,10 @@ try {
 				twitch: "",
 			},
 		],
-		bsr: "",
+		song: {
+			bsr: "",
+			diff: "",
+		},
 		watch: true,
 		panel: true,
 		streams: true,
@@ -110,7 +97,7 @@ async function saveData(info: infoFile) {
 					saveFile(`p${index}\\twitch.txt`, pl.twitch);
 				}
 			} else {
-				stream_module.failedToGet(pl.id);
+				stream_module.failedToGetPlayer(pl.id);
 			}
 		});
 	}
@@ -119,8 +106,8 @@ async function saveData(info: infoFile) {
 		stream_module.streamUpdate(opts);
 	}
 
-	if (opts.bsr) {
-		getbs(opts.bsr);
+	if (opts.song && opts.song.bsr) {
+		getbs(opts.song.bsr);
 	}
 }
 
@@ -139,6 +126,7 @@ async function getbs(bsr: string) {
 		saveFile("song\\song_map_name.txt", map_data.name);
 		saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
 		saveFile("song\\song_map_code.txt", map_data.key);
+		saveFile("song\\song_diff.txt", opts.song.diff);
 	}
 }
 
@@ -165,5 +153,6 @@ export default {
 	saveFile,
 	connectToTA,
 	file,
+	opts,
 	disableUpdate,
 };

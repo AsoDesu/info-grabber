@@ -1,24 +1,12 @@
 import TAManager from "./TAManager";
 import index from "../index";
+import stream_manager from "../stream-module/backend";
 
 import beatsaver from "../beatsaverApi";
 import fs from "fs";
 
-type infoFile = {
-	players: player[];
-	bsr: string;
-	watch: boolean;
-	streams: boolean;
-	taip: {
-		ip: string;
-		password: string;
-	};
-};
-
-type player = {
-	id: string;
-	twitch: string;
-};
+import { infoFile, player } from "../Types";
+import * as types from "./TATypes";
 
 var manager: TAManager;
 
@@ -33,14 +21,27 @@ function connectToTA(opts: infoFile) {
 	}
 
 	manager = new TAManager(ip);
-	listenForSongLoads();
+	listen();
 }
 
-function listenForSongLoads() {
-	manager.on("song-load", (e) => {
+function listen() {
+	manager.on("err", () => {
+		stream_manager.failedToConnect();
+	});
+
+	manager.on("song-load", async (e) => {
 		if (!e.SelectedLevel.LevelId.includes("custom_level_")) return;
 		console.log("\x1b[32mSong Loaded From TA: Downloading.");
-		getbsfromhash(e.SelectedLevel.LevelId.replace("custom_level_", ""));
+		var map_data = await getbsfromhash(e.SelectedLevel.LevelId.replace("custom_level_", ""));
+
+		var opts = index.opts;
+		opts.song.bsr = map_data.key;
+		stream_manager.streamUpdate(opts);
+	});
+
+	manager.on("state-change", (state: types.state) => {
+		var info = index.opts;
+		stream_manager.send(JSON.stringify(info));
 	});
 }
 
@@ -55,9 +56,17 @@ async function getbsfromhash(bsr: string) {
 		index.saveFile("song\\song_map_name.txt", map_data.name);
 		index.saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
 		index.saveFile("song\\song_map_code.txt", map_data.key);
+	} else {
+		stream_manager.failedToGetMap();
 	}
+	return map_data;
+}
+
+function getManager() {
+	return manager;
 }
 
 export default {
 	connectToTA,
+	getManager,
 };
