@@ -36,7 +36,7 @@ function listen() {
 		var map_data = await getbsfromhash(e.SelectedLevel.LevelId.replace("custom_level_", ""));
 
 		var opts = index.opts;
-		opts.song.bsr = map_data.key;
+		opts.song.bsr = map_data.id;
 		stream_manager.streamUpdate(opts);
 	});
 
@@ -55,8 +55,8 @@ async function getbsfromhash(bsr: string) {
 
 		fs.writeFileSync(path.join(process.cwd(), `data\\song\\song_img.png`), map_img, { encoding: "binary" });
 		index.saveFile("song\\song_map_name.txt", map_data.name);
-		index.saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
-		index.saveFile("song\\song_map_code.txt", map_data.key);
+		index.saveFile("song\\song_map_mapper.txt", map_data.uploader.name);
+		index.saveFile("song\\song_map_code.txt", map_data.id);
 	} else {
 		stream_manager.failedToGetMap();
 	}

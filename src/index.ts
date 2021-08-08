@@ -125,8 +125,8 @@ async function getbs(bsr: string) {
 
 		fs.writeFileSync(path.join(process.cwd(), `data\\song\\song_img.png`), map_img, { encoding: "binary" });
 		saveFile("song\\song_map_name.txt", map_data.name);
-		saveFile("song\\song_map_mapper.txt", map_data.uploader.username);
-		saveFile("song\\song_map_code.txt", map_data.key);
+		saveFile("song\\song_map_mapper.txt", map_data.uploader.name);
+		saveFile("song\\song_map_code.txt", map_data.id);
 		saveFile("song\\song_diff.txt", opts.song.diff);
 	}
 }
